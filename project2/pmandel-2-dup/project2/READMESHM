@@ -1,0 +1,14 @@
+
+Simple application to demonstrate organizing an MxM array of integers within a shared memory block. Two files: shmsrv.c shmcli.c
+
+Invocation: ./shmsrv
+
+Server creates shared memory segment to hold the array.
+The block contains integer pointers followed by the rows of integer values.
+Comments in shmsrv.c describe the array layout in more detail.
+
+Parent uses fork/exec to run shmcli.  This client fills in the array.
+
+Parent waits for the child to finish and then prints out the values stored by the child.
+
+There are other approaches to creating the 2D array of integers.  You are not required to use this approach.

@@ -1,0 +1,74 @@
+3 slip days used
+1 slip days left
+
+1. At any time, there are no more than m baby eagles eating.
+    Through the use of of Semaphore Block("Lock"), the program 
+    should be ensured that no more than m baby eagles eating. 
+    After each baby eagle thread goes into eating the Block.Wait(); 
+    will be called each time for up to m time before getting blocked 
+    and put into waiting list. 
+
+2. A baby eagle must wait when he wants to eat but has no free feeding pot
+and/or all free feeding pots are all empty.
+    The method search_feeding_pot() will be called when a baby eagle thread want to eat. 
+    In the case when there is no free feeding pot, 
+    search_feeding_pot() will blocked the thread through the .Wait();
+
+3. If there is a non-empty feeding pot, a hungry and ready-to-eat baby eagle can eat.
+    The method that ensure this occurence is search_feeding_pot(). 
+    To ensure that no baby can eat from the same pot Mutex.Wait() 
+    will be call before each condition statement and then the feeding pot
+    will be marked right away as empty (feedingPot[i] = 0).
+
+4. No hungry baby eagle will eat using an empty feeding pot.
+    To ensure that no baby will eat using empty feeding pot the thread will called Mutex.Wait()
+     before going into the conditional statement and determining whether or not feeding pot is/not empty.
+      Then called Mutex.Signal to give other babies to do the same. 
+
+5. At any time, a feeding pot can only be used by one eating baby eagle.
+   In combination of reiteration of the answers to the previous 2 questions. 
+   Mutex is called after each for-loop iteration and if the baby eagle find a free feedingPot ( == 1 ) 
+   then it mark that feeding pot as empty (feedingPot[i] = 0) without interruption.
+
+6. Only one baby eagle among all baby eagles who want to eat can wake up
+the mother eagle.
+    When babies iterates through the feedingPots and found nothing (exiting the loop) 
+    then whoever get access to the Mutex.Wait(); first will have the chance to check 
+    whether the feedingPot is still empty before calling the mother. 
+    Thus ensuring that only one baby can wake up mother eagle. 
+
+7. The mother eagle does not run until a baby eagle wakes her up.
+    To ensures that the mother only wakes up when a baby eagle called,
+    the Semaphore MotherSleep() is intialized to zero. 
+    Wen she go_to_sleep() when she first started her thread will be blocked 
+    right away from Mother.Sleep() in the method. She only can be wake-up (or Signal) 
+    by the wake_up_mother() method. 
+
+8. While the mother eagle is preparing food, no baby eagle can wake up the
+mother again until the mother goes back to take a nap.
+    To ensures that no baby eagle can wake up mother again, I have implemented a Semaphore Mutex.Wait()
+    that only let one thread through at a time. Each checking the conditional statement (motherAwake== false) 
+    if so wake up mother otherwise skip. 
+
+9. Before all m feeding pots are filled, no hungry baby eagle can eat.
+    Continuing off of question 8 answer, all threads should then enter a waiting state, 
+    until feedingPots to become available again through NotEmpty.Wait(). 
+    When feedingPots is ready through the food_ready() methods it will then signal 
+    the threads that got block by NotEmpty to search_feeding_pot() again.
+
+10. Once the feeding pots are refilled, the mother eagle must allow baby
+eagles to eat. Then, she goes back to sleep.
+    During the wake_up_mother() method, the mother will then call food_ready() 
+    which goes through the feedingPots[] array and set all of the pot to 1 (available to eat). 
+    After it is done the mother would then call the NotEmpty.Signal() thus 
+    freeing the blocked threads/babies that are waiting to search and eat.
+
+11. You program terminates gracefully. More precisely, if t feedings are
+needed, then your program cannot terminate right after the mother eagle
+refills the feeding pots t times. Instead, your program must wait until all
+feeding pots become empty, even though there may be baby eagles
+waiting for food. How do you implement this requirement?
+    To make sure this happen I created a condition statement just before the baby wakes up the 
+    mother again in the search_feeding_pots() method. 
+    The conditional statement compared the global counter variable and the limit variable (t feedings) 
+    to see if they are on the last cycle if so let them return gracefully. 

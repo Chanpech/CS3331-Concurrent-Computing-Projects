@@ -1,0 +1,40 @@
+1 slip day
+
+1. Are there any race conditions in this prefix sum computation? Why?
+    Yes the prefix sum computation does violate the race conditions,
+since the threads used for computation are ran concurrently. 
+Further more by the execution of the ./pro3 <- someinput, 
+the threads does seems to be printing each statements not necessarly 
+in an expected order, thus showing that threads does operates concurrently. 
+
+2.Can the result of x[i]+x[i-2 h-1 ] of run h be saved back to x[i]? Explain
+your findings as clearly as possible.
+    The result of x[i] + x[i-2^(h-1)] of run h cannot be save back into x[i] with the gap of 2^(h-1).
+The main reasons is that the threads are running concurrently. 
+So if the result of x[i] + x[i-2^(h-1)] from one thread were to be place back into x[i] with out 
+any sort of handling like semaphore or mutex then it is likely to be incorrect 
+because other thread that we expect to calculate the old xi could end up executing the new xi.
+
+3. The main() creates n threads in each iteration and wait for them to complete.
+There is a significant amount of time in creating and joining threads. If you are
+allowed to use extra variables/arrays and busy waiting, can you just create n
+threads and let them do all the work without the use of a temporary array
+B[*,*]? Suggest a solution and discuss its correctness.
+    Instead of a temporary array B[*,*], we can likely use busy waiting to keep the n threads from giving up on the CPU
+but letting it go through a loop. For example, a particular thread can execute a loop while waiting for other threads 
+to finish with its execution/computation. Then after we have all values of each thread can try writing directly to 
+
+4. Prove rigorously (proof by induction, not by example) that this algorithm does
+compute the prefix sum correctly.
+x[i - 2 ^(h-1)] ... x[i] @run h: Gap = 2^(h-1)
+Basis: 
+For this algorithm, on the first iteration of the nested loop we are taken to the thread.cpp. Wnere there are two conditions. The base case is when (column - gap < 0) we copies the element B[row-1][column] to B[row][column].
+Otherwise the thread will computes B[row-1][column] + B[row-1][column - gap]
+This iteration continues for [k, size] times.
+
+Hypothesis: Assuming that the basis hold such that on run h when gap = 2^(h-1) then
+B[row][column] = B[row][column] + B[row][column - 2^(h-1)];
+Inductive: We want to show that at run h + 1, gap = 2^h such that B[row][column] + B[row][column - 2^(h)] is also true when row and column >= 1;
+Drawing from our hypothesis gap = 2 ^(h-1) when row and column >= k. So on the iteration when (h + 1), that mean gap increased to 2 ^ (h -1 + 1). At run h + 1, if h + 1 still is less than or equal to k, then thread will enter the following conditions. If (column - gap < 0) the element will just be copied. Otherwise computes B[row-1][column] + B[row-1][column - gap] and placed it as new element at B[row][column]. 
+Since we have shown the variables from the above iteration are equivalent to the one on run h. We have completed 
+Conclusion: By the process of induction we have prove that the algorithm does compute the prefix sum correctly.
