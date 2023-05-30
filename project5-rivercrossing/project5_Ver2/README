@@ -1,0 +1,21 @@
+# slip days used
+# slip day left
+
+1. The logic of your program, why does your program work?
+
+2. Why every boat load has exactly three persons and is safe?
+
+3. Clearly state your policy of assembling a safe boat load.
+
+4. Why do CannibalArrives(), MissionaryArrives(), BoatReady() and BoatDone()
+work properly? More precisely, explain that why your version of
+CannibalArrives(), MissionaryArrives(), BoatReady() and BoatDone() can always
+guarantee:
+
+a) No one can get off the boat before a crossing completes.
+b) While the boat is crossing the river, no one can jump on and get off the
+boat.
+c) Everyone on the boat has been registered properly. More precisely, no
+one who was not registered can be on the boat.
+d) No one who is on the boat for a crossing can come back and register for
+another crossing before the current boat load completes

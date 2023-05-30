@@ -1,0 +1,34 @@
+1# slip days used
+0# slip day left
+
+1. The logic of your program, why does your program work?
+It used Hoare still monitor as suggested. The program been ran through a script that execute this program 100 time and it didn't deadlock.
+
+2. Why every boat load has exactly three persons and is safe?
+Ensured that the boat is always safe by three selective methods: ThreeCannibals(), ThreeMissionaries(), OneCannibalsTwoMissonaries(). This three methods will randomly grab whoever three individuals from the front queues of queue<int> cannibalQueue and queue<int> missionaryQueue and placed the three selected into the queue<int> passengerQueue.
+
+3. Clearly state your policy of assembling a safe boat load.
+As iterates the boat will only load with the isEmpty variable is true and if not it will be blocked by BoatQueue.Wait(). This thread will be blocked until the boat done call BoatQueue.Signal();
+
+4. Why do CannibalArrives(), MissionaryArrives(), BoatReady() and BoatDone()
+work properly? More precisely, explain that why your version of
+CannibalArrives(), MissionaryArrives(), BoatReady() and BoatDone() can always
+guarantee: 
+
+a) No one can get off the boat before a crossing completes.
+b) While the boat is crossing the river, no one can jump on and get off the
+boat.
+c) Everyone on the boat has been registered properly. More precisely, no
+one who was not registered can be on the boat.
+d) No one who is on the boat for a crossing can come back and register for
+another crossing before the current boat load completes
+
+4. Answer:
+
+a) It guarantee that no one can get off the boat before a crossing completes by the CannibalQueue.Wait() and MissionaryQueue.Wait() conditional variables as well as the monitor. Which makes sure that this process must be done first before any other threads operates.
+
+b) No one can jump off the boat is secured by the factor that the monitor will only signal CannibalQueue.Signal() and MissionaryQueue.Signal() can only happen after the boat arrived.
+
+c) It is ensured by the SelectPassenger() method which randomly select a method based on the optimal threads available. Within those method monitor is used to ensure that the selected passenger to be on the boat can't be interrupted.
+
+d) It is not possible to have any passenger to reenter the boat when it is not complete due to the monitor in the PassengerSelect methods.
